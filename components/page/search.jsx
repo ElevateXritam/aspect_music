@@ -24,7 +24,7 @@ export default function Search() {
             <Link href={"/search/" + query} ref={linkRef}></Link>
             <form onSubmit={handleSubmit} className="flex items-center relative z-10 w-full">
                 <Button variant="ghost" type="submit" size="icon" className="absolute right-0 rounded-xl rounded-l-none bg-none"><SearchIcon className="w-4 h-4" /></Button>
-                <Input ref={inpRef} value={query} onChange={(e) => setQuery(e.target.value)} autoComplete="off" type="search" className="rounded-lg bg-secondary/50" name="query" placeholder="Try Maharani.." />
+                <Input ref={inpRef} value={query} onChange={(e) => setQuery(e.target.value)} autoComplete="off" type="search" className="rounded-lg bg-secondary/50" name="query" placeholder="Search The World...." />
             </form>
         </>
     )
