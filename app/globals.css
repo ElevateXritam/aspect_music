@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---------------------------------------------------
+   THEME VARIABLES
+---------------------------------------------------- */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -24,13 +27,13 @@
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+
+    /* AURA COLORS FOR GLASS EFFECTS */
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.15);
   }
 
+  /* Dark theme variables with stronger glow */
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -51,49 +54,80 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
   }
 }
 
+/* ---------------------------------------------------
+   GLOBAL BASE STYLES
+---------------------------------------------------- */
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border transition-all duration-300;
   }
+
   body {
     @apply bg-background text-foreground select-none;
+    background: radial-gradient(circle at top left, #1a1a1a 0%, #0a0a0a 60%, #000 100%);
   }
-  ::-webkit-scrollbar{
+
+  /* Completely hide scrollbars */
+  ::-webkit-scrollbar {
     @apply w-0 h-0;
   }
-  ::-webkit-scrollbar-track{
-    @apply bg-transparent;
-  }
-  .blurz{
-    animation: blur .7s forwards;
+
+  /* Default blur animation */
+  .blurz {
+    animation: blur 0.7s forwards;
   }
 
   @keyframes blur {
-    0%{
+    0%, 20%, 40%, 60%, 80% {
       filter: blur(5px);
     }
-    20%{
-      filter: blur(5px);
-    }
-    40%{
-      filter: blur(5px);
-    }
-    60%{
-      filter: blur(5px);
-    }
-    80%{
-      filter: blur(5px);
-    }
-    100%{
+    100% {
       filter: blur(0);
     }
+  }
+}
+
+/* ---------------------------------------------------
+   GLASSMORPHISM UTILITY CLASSES
+---------------------------------------------------- */
+@layer components {
+  .glass {
+    backdrop-filter: blur(16px);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 1rem;
+    box-shadow:
+      0 4px 20px rgba(0, 0, 0, 0.4),
+      inset 0 0 8px rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  .glass:hover {
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow:
+      0 6px 26px rgba(0, 0, 0, 0.6),
+      inset 0 0 12px rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .glow-hover {
+    transition: 0.3s ease;
+  }
+
+  .glow-hover:hover {
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.08);
+  }
+
+  .soft-tap {
+    transition: transform 0.15s;
+  }
+  .soft-tap:active {
+    transform: scale(0.95);
   }
 }
