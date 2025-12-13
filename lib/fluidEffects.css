@@ -1,0 +1,358 @@
+/* ==========================================
+   Fluid and Liquid Animation Effects
+   =========================================== */
+
+/* Base fluid container */
+.fluid-container {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Liquid wave animation */
+.liquid-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 200%;
+  height: 100px;
+  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,50 Q300,0 600,50 T1200,50 L1200,120 L0,120 Z" fill="%23ffffff" opacity="0.3"/></svg>') repeat-x;
+  animation: wave 15s linear infinite;
+  transform: translateY(0);
+}
+
+.liquid-wave:nth-child(2) {
+  bottom: 10px;
+  animation: wave 10s linear infinite reverse;
+  opacity: 0.5;
+}
+
+.liquid-wave:nth-child(3) {
+  bottom: 15px;
+  animation: wave 8s linear infinite;
+  opacity: 0.3;
+}
+
+@keyframes wave {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(50%);
+  }
+}
+
+/* Fluid blob animation */
+.fluid-blob {
+  position: absolute;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(100, 200, 255, 0.4));
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  animation: blobMotion 8s ease-in-out infinite;
+  filter: blur(1px);
+}
+
+.fluid-blob:nth-child(1) {
+  width: 150px;
+  height: 150px;
+  top: 20%;
+  left: 10%;
+  animation: blobMotion 8s ease-in-out infinite;
+}
+
+.fluid-blob:nth-child(2) {
+  width: 200px;
+  height: 200px;
+  top: 50%;
+  right: 10%;
+  animation: blobMotion 10s ease-in-out infinite reverse;
+}
+
+.fluid-blob:nth-child(3) {
+  width: 120px;
+  height: 120px;
+  bottom: 20%;
+  left: 50%;
+  animation: blobMotion 12s ease-in-out infinite;
+}
+
+@keyframes blobMotion {
+  0% {
+    transform: translate(0, 0) scale(1);
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  }
+  25% {
+    transform: translate(30px, -50px) scale(1.1);
+    border-radius: 70% 30% 66% 34% / 33% 66% 34% 67%;
+  }
+  50% {
+    transform: translate(0, -100px) scale(0.9);
+    border-radius: 100% 60% 52% 48% / 48% 48% 52% 52%;
+  }
+  75% {
+    transform: translate(-30px, -50px) scale(1.05);
+    border-radius: 34% 66% 34% 66% / 66% 34% 66% 34%;
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  }
+}
+
+/* Liquid drop animation */
+.liquid-drop {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.9), rgba(100, 150, 255, 0.6));
+  border-radius: 50%;
+  animation: dropFall 4s ease-in infinite;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.liquid-drop:nth-child(1) {
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.liquid-drop:nth-child(2) {
+  left: 50%;
+  animation-delay: 1s;
+}
+
+.liquid-drop:nth-child(3) {
+  left: 80%;
+  animation-delay: 2s;
+}
+
+@keyframes dropFall {
+  0% {
+    transform: translateY(-300px);
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+}
+
+/* Fluid morph animation */
+.fluid-morph {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  animation: fluidMorph 6s ease-in-out infinite;
+}
+
+@keyframes fluidMorph {
+  0% {
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    transform: scale(1);
+  }
+  25% {
+    border-radius: 70% 30% 66% 34% / 33% 66% 34% 67%;
+    transform: scale(1.1);
+  }
+  50% {
+    border-radius: 100% 60% 52% 48% / 48% 48% 52% 52%;
+    transform: scale(0.95);
+  }
+  75% {
+    border-radius: 34% 66% 34% 66% / 66% 34% 66% 34%;
+    transform: scale(1.05);
+  }
+  100% {
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    transform: scale(1);
+  }
+}
+
+/* Liquid shimmer effect */
+.liquid-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.liquid-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Fluid pulse animation */
+.fluid-pulse {
+  animation: fluidPulse 2s ease-in-out infinite;
+}
+
+@keyframes fluidPulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Liquid glow effect */
+.liquid-glow {
+  position: relative;
+  z-index: 1;
+}
+
+.liquid-glow::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, rgba(100, 200, 255, 0.4), transparent);
+  animation: glow 3s ease-in-out infinite;
+  border-radius: inherit;
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px rgba(100, 200, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(100, 200, 255, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(100, 200, 255, 0.3);
+  }
+}
+
+/* Flowing liquid text */
+.liquid-text {
+  background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #4facfe);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: liquidFlow 8s ease infinite;
+}
+
+@keyframes liquidFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Ripple effect */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: rippleEffect 1.5s ease-out;
+}
+
+@keyframes rippleEffect {
+  0% {
+    width: 10px;
+    height: 10px;
+    opacity: 1;
+  }
+  100% {
+    width: 400px;
+    height: 400px;
+    opacity: 0;
+  }
+}
+
+/* Fluid gradient animation */
+.fluid-gradient {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Soft fluid shadow */
+.fluid-shadow {
+  position: relative;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .fluid-blob {
+    animation-duration: 6s;
+  }
+
+  .liquid-wave {
+    height: 60px;
+  }
+
+  .liquid-drop {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+/* Accessibility - reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .fluid-blob,
+  .liquid-wave,
+  .liquid-drop,
+  .fluid-morph,
+  .fluid-pulse,
+  .ripple::after,
+  .liquid-text,
+  .fluid-gradient,
+  .liquid-shimmer::before {
+    animation: none !important;
+  }
+}
