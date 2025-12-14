@@ -2,43 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ======================================================
-   ROOT THEME VARIABLES (UNCHANGED STRUCTURE)
-====================================================== */
+/* =====================================================
+   THEME (UNCHANGED STRUCTURE – SAFE)
+===================================================== */
 @layer base {
   :root {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-
     --card: 240 10% 6%;
     --card-foreground: 0 0% 98%;
-
     --popover: 240 10% 6%;
     --popover-foreground: 0 0% 98%;
-
     --primary: 0 0% 98%;
     --primary-foreground: 240 5.9% 10%;
-
     --secondary: 240 4% 14%;
     --secondary-foreground: 0 0% 98%;
-
     --muted: 240 4% 14%;
     --muted-foreground: 240 5% 65%;
-
     --accent: 240 4% 18%;
     --accent-foreground: 0 0% 98%;
-
     --border: 240 3.7% 15%;
     --input: 240 3.7% 15%;
     --ring: 240 4.9% 83.9%;
-
     --radius: 0.75rem;
   }
 }
 
-/* ======================================================
-   BASE STYLES
-====================================================== */
+/* =====================================================
+   BASE
+===================================================== */
 @layer base {
   * {
     @apply border-border;
@@ -47,8 +39,8 @@
   body {
     @apply bg-background text-foreground select-none;
     background-image:
-      radial-gradient(circle at top, rgba(255,255,255,0.04), transparent 40%),
-      radial-gradient(circle at bottom, rgba(255,255,255,0.02), transparent 40%);
+      radial-gradient(circle at top, rgba(255,255,255,0.04), transparent 45%),
+      radial-gradient(circle at bottom, rgba(255,255,255,0.02), transparent 45%);
   }
 
   ::-webkit-scrollbar {
@@ -57,82 +49,71 @@
   }
 }
 
-/* ======================================================
-   GLASSMORPHISM UTILITIES (SAFE)
-====================================================== */
-.glass {
+/* =====================================================
+   GLOBAL GLASS EFFECT (AUTO)
+   Applies to cards, nav, player, panels
+===================================================== */
+div,
+section,
+header,
+footer {
+  backdrop-filter: blur(0px);
+}
+
+/* Cards */
+div[class*="rounded"],
+div[class*="card"] {
   background: rgba(20, 20, 25, 0.55);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
   box-shadow:
     0 8px 30px rgba(0,0,0,0.35),
     inset 0 1px 0 rgba(255,255,255,0.04);
-}
-
-.glass-soft {
-  background: rgba(20, 20, 25, 0.35);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-}
-
-/* ======================================================
-   FLUID MOTION (VERY LIGHT – NO JS)
-====================================================== */
-@keyframes fluidFloat {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
-  100% { transform: translateY(0px); }
-}
-
-.fluid-hover {
   transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
-.fluid-hover:hover {
-  transform: translateY(-4px) scale(1.015);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.45);
+/* Hover fluid lift */
+div[class*="rounded"]:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.45);
 }
 
-/* ======================================================
-   LIQUID GLOW (SUBTLE)
-====================================================== */
-.liquid-glow {
-  position: relative;
-}
-
-.liquid-glow::after {
-  content: "";
-  position: absolute;
-  inset: -20%;
-  background: radial-gradient(
-    circle,
-    rgba(120,180,255,0.18),
-    transparent 60%
-  );
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-}
-
-.liquid-glow:hover::after {
-  opacity: 1;
-}
-
-/* ======================================================
-   PLAYER SAFE EFFECTS
-====================================================== */
-.player-glass {
+/* =====================================================
+   MINI PLAYER (AUTO DETECT – FIXED BOTTOM)
+===================================================== */
+div[style*="position: fixed"],
+div[class*="fixed"][class*="bottom"] {
   background: rgba(15, 15, 20, 0.7);
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
   border-top: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 -12px 40px rgba(0,0,0,0.6);
 }
 
-/* ======================================================
-   TEXT LIQUID GRADIENT (OPTIONAL)
-====================================================== */
-.liquid-text {
+/* =====================================================
+   BUTTONS – LIQUID FEEL
+===================================================== */
+button {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+/* =====================================================
+   INPUT / SEARCH BAR – GLASS
+===================================================== */
+input {
+  background: rgba(20,20,25,0.55) !important;
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* =====================================================
+   LIQUID TEXT SHIMMER (HEADINGS AUTO)
+===================================================== */
+h1, h2 {
   background: linear-gradient(
     120deg,
     #9fd3ff,
@@ -152,9 +133,9 @@
   100% { background-position: 0% 50%; }
 }
 
-/* ======================================================
-   REDUCED MOTION SUPPORT
-====================================================== */
+/* =====================================================
+   ACCESSIBILITY
+===================================================== */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;
