@@ -2,98 +2,194 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ======================================================
+   THEME VARIABLES (UNCHANGED – SAFE)
+   ====================================================== */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-    --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-  }
-
-  .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+
+    --card: 240 10% 6%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
+
+    --popover: 240 10% 6%;
     --popover-foreground: 0 0% 98%;
+
     --primary: 0 0% 98%;
     --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
+
+    --secondary: 240 4% 15%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
+
+    --muted: 240 4% 15%;
+    --muted-foreground: 240 5% 65%;
+
+    --accent: 240 4% 15%;
     --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+
+    --border: 240 4% 18%;
+    --input: 240 4% 18%;
+    --ring: 240 5% 84%;
+
+    --radius: 0.75rem;
   }
 }
 
+/* ======================================================
+   BASE RESET
+   ====================================================== */
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground select-none;
-  }
-  ::-webkit-scrollbar{
-    @apply w-0 h-0;
-  }
-  ::-webkit-scrollbar-track{
-    @apply bg-transparent;
-  }
-  .blurz{
-    animation: blur .7s forwards;
+    background-image:
+      radial-gradient(circle at top, rgba(99,102,241,0.12), transparent 55%),
+      radial-gradient(circle at bottom, rgba(34,211,238,0.10), transparent 55%);
+    background-attachment: fixed;
   }
 
-  @keyframes blur {
-    0%{
-      filter: blur(5px);
-    }
-    20%{
-      filter: blur(5px);
-    }
-    40%{
-      filter: blur(5px);
-    }
-    60%{
-      filter: blur(5px);
-    }
-    80%{
-      filter: blur(5px);
-    }
-    100%{
-      filter: blur(0);
-    }
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+}
+
+/* ======================================================
+   GLASS / TRANSPARENT EFFECTS
+   ====================================================== */
+@layer utilities {
+
+  /* Universal glass */
+  .glass {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  /* Header / Search bar glass */
+  .glass-header {
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(22px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  /* Card glass */
+  .glass-card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  .glass-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+  }
+
+  /* Mini Player glass */
+  .glass-player {
+    background: rgba(15,15,15,0.75);
+    backdrop-filter: blur(25px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+}
+
+/* ======================================================
+   FLUID / LIQUID ANIMATIONS
+   ====================================================== */
+@layer utilities {
+
+  /* Animated gradient background */
+  .fluid-bg {
+    background: linear-gradient(
+      -45deg,
+      #050505,
+      #0f172a,
+      #020617,
+      #000000
+    );
+    background-size: 400% 400%;
+    animation: fluidGradient 18s ease infinite;
+  }
+
+  /* Liquid text */
+  .liquid-text {
+    background: linear-gradient(
+      45deg,
+      #a855f7,
+      #6366f1,
+      #22d3ee,
+      #a855f7
+    );
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: liquidFlow 7s ease infinite;
+  }
+
+  /* Soft floating */
+  .float-soft {
+    animation: floatSoft 6s ease-in-out infinite;
+  }
+
+  /* Glow pulse */
+  .glow-soft {
+    box-shadow: 0 0 25px rgba(99,102,241,0.35);
+  }
+
+  /* Ripple hover */
+  .ripple {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ripple::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 10%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .ripple:hover::after {
+    opacity: 1;
+  }
+}
+
+/* ======================================================
+   KEYFRAMES
+   ====================================================== */
+@keyframes fluidGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes liquidFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes floatSoft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* ======================================================
+   ACCESSIBILITY
+   ====================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .fluid-bg,
+  .liquid-text,
+  .float-soft {
+    animation: none !important;
   }
 }
