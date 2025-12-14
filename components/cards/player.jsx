@@ -1,11 +1,8 @@
 "use client";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import {
   ExternalLink,
-  Link2Icon,
-  Pause,
-  PauseCircle,
   Play,
   Repeat,
   Repeat1,
@@ -14,191 +11,174 @@ import {
 import { Slider } from "../ui/slider";
 import { getSongsById } from "@/lib/fetch";
 import Link from "next/link";
-import { MusicContext, useMusicProvider } from "@/hooks/use-context";
-import { toast } from "sonner";
+import { useMusicProvider } from "@/hooks/use-context";
 import { Skeleton } from "../ui/skeleton";
 import { IoPause } from "react-icons/io5";
 
 export default function Player() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const [playing, setPlaying] = useState(false);
   const audioRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [audioURL, setAudioURL] = useState("");
   const [isLooping, setIsLooping] = useState(false);
+
   const { music, setMusic, current, setCurrent } = useMusicProvider();
 
-  const getSong = async () => {
-    const get = await getSongsById(music);
-    const data = await get.json();
-    setData(data.data[0]);
-    if (data?.data[0]?.downloadUrl[2]?.url) {
-      setAudioURL(data?.data[0]?.downloadUrl[2]?.url);
-    } else if (data?.data[0]?.downloadUrl[1]?.url) {
-      setAudioURL(data?.data[0]?.downloadUrl[1]?.url);
-    } else {
-      setAudioURL(data?.data[0]?.downloadUrl[0]?.url);
-    }
+  /* =========================
+     MEDIA SESSION (FIX)
+     ========================= */
+  const setMediaSession = (song) => {
+    if (!("mediaSession" in navigator) || !song) return;
+
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: song.name,
+      artist: song.artists?.primary?.[0]?.name || "",
+      album: song.album?.name || "Aspect Music",
+      artwork: [
+        { src: song.image?.[0]?.url, sizes: "96x96", type: "image/png" },
+        { src: song.image?.[1]?.url, sizes: "128x128", type: "image/png" },
+        { src: song.image?.[2]?.url, sizes: "256x256", type: "image/png" },
+        { src: song.image?.[2]?.url, sizes: "512x512", type: "image/png" },
+      ],
+    });
+
+    navigator.mediaSession.setActionHandler("play", () => {
+      audioRef.current?.play();
+    });
+
+    navigator.mediaSession.setActionHandler("pause", () => {
+      audioRef.current?.pause();
+    });
+
+    navigator.mediaSession.setActionHandler("seekto", (details) => {
+      if (details.seekTime != null) {
+        audioRef.current.currentTime = details.seekTime;
+      }
+    });
   };
 
-  const formatTime = (time) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  /* ========================= */
+
+  const getSong = async () => {
+    const res = await getSongsById(music);
+    const json = await res.json();
+    const song = json.data[0];
+
+    setData(song);
+    setMediaSession(song); // 🔥 MAIN FIX
+
+    const url =
+      song.downloadUrl?.[2]?.url ||
+      song.downloadUrl?.[1]?.url ||
+      song.downloadUrl?.[0]?.url;
+
+    setAudioURL(url);
   };
 
   const togglePlayPause = () => {
-    if (playing) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
-    }
-    setPlaying(!playing);
+    if (!audioRef.current) return;
+    playing ? audioRef.current.pause() : audioRef.current.play();
   };
 
-  const handleSeek = (e) => {
-    const seekTime = e[0];
-    audioRef.current.currentTime = seekTime;
-    setCurrentTime(seekTime);
+  const handleSeek = (val) => {
+    audioRef.current.currentTime = val[0];
+    setCurrentTime(val[0]);
   };
 
   const loopSong = () => {
-    audioRef.current.loop = !audioRef.current.loop;
+    audioRef.current.loop = !isLooping;
     setIsLooping(!isLooping);
   };
 
   useEffect(() => {
-    if (music) {
-      getSong();
-      if (current) {
-        audioRef.current.currentTime = parseFloat(current + 1);
-      }
-      setPlaying(
-        (localStorage.getItem("p") == "true" && true) ||
-          (!localStorage.getItem("p") && true),
-      );
-      const handleTimeUpdate = () => {
-        try {
-          setCurrentTime(audioRef.current.currentTime);
-          setDuration(audioRef.current.duration);
-          setCurrent(audioRef.current.currentTime);
-        } catch (e) {
-          setPlaying(false);
-        }
-      };
-      audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
-      return () => {
-        if (audioRef.current) {
-          audioRef.current.removeEventListener("timeupdate", handleTimeUpdate);
-        }
-      };
+    if (!music) return;
+
+    getSong();
+
+    if (current) {
+      audioRef.current.currentTime = current;
     }
+
+    const onTimeUpdate = () => {
+      setCurrentTime(audioRef.current.currentTime);
+      setDuration(audioRef.current.duration || 0);
+      setCurrent(audioRef.current.currentTime);
+    };
+
+    audioRef.current.addEventListener("timeupdate", onTimeUpdate);
+    return () => {
+      audioRef.current?.removeEventListener("timeupdate", onTimeUpdate);
+    };
   }, [music]);
+
   return (
     <main>
       <audio
-        autoPlay={playing}
+        ref={audioRef}
+        src={audioURL}
+        autoPlay
+        preload="metadata"
+        playsInline
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
-        onLoadedData={() => setDuration(audioRef.current.duration)}
-        src={audioURL}
-        ref={audioRef}
-      ></audio>
-      {music && (
-        <div className="shadow-lg fixed grid bottom-0 max-w-[500px] md:border-l md:border-r md:rounded-md md:!rounded-b-none md:ml-auto right-0 left-0 border-border overflow-hidden border-t-none z-50 bg-background gap-3">
-          <div className="w-full">
-            {!duration ? (
-              <Skeleton className="h-1 w-full" />
-            ) : (
-              <Slider
-                thumbClassName="hidden"
-                trackClassName="h-1 transition-[height] group-hover:h-2 rounded-none"
-                onValueChange={handleSeek}
-                value={[currentTime]}
-                max={duration}
-                className="w-full group"
-              />
-            )}
-          </div>
-          <div className="grid gap-2 p-3 pt-0">
-            <div className="flex items-center justify-between gap-3">
-              <div className="relative flex items-center gap-2 w-full">
-                <img
-                  src={data.image ? data?.image[1]?.url : ""}
-                  alt={data?.name}
-                  className="rounded-md aspect-square h-12 w-12 bg-secondary hover:opacity-85 transition cursor-pointer"
-                />
-                <img
-                  src={data.image ? data?.image[1]?.url : ""}
-                  alt={data?.name}
-                  className="rounded-md h-[110%] min-w-[110%] opacity-40 hidden dark:block absolute top-0 left-0 right-0 blur-3xl -z-10"
-                />
-                <div>
-                  {!data?.name ? (
-                    <Skeleton className="h-4 w-32" />
-                  ) : (
-                    <Link
-                      href={`/${music}`}
-                      className="text-base flex hover:opacity-85 transition font-medium gap-2 items-center"
-                    >
-                      {/* Truncate needs a width to cut off text */}
-                      <span className="truncate sm:max-w-[200px] max-w-[150px]">
-                        {data?.name}
-                      </span>
-                      <ExternalLink className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
-                    </Link>
-                  )}
+        onLoadedMetadata={() =>
+          setDuration(audioRef.current.duration || 0)
+        }
+      />
 
-                  {!data?.artists?.primary[0]?.name ? (
-                    <Skeleton className="h-3 w-14 mt-1" />
-                  ) : (
-                    <h2 className="text-xs -mt-0.5 text-muted-foreground truncate max-w-[180px]">
-                      {data?.artists?.primary[0]?.name}
-                    </h2>
-                  )}
-                </div>
+      {music && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t shadow-lg max-w-[500px] mx-auto">
+          {!duration ? (
+            <Skeleton className="h-1 w-full" />
+          ) : (
+            <Slider
+              value={[currentTime]}
+              max={duration}
+              onValueChange={handleSeek}
+              className="w-full"
+            />
+          )}
+
+          <div className="p-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <img
+                src={data?.image?.[1]?.url}
+                className="h-12 w-12 rounded-md"
+                alt=""
+              />
+              <div>
+                <Link href={`/${music}`} className="text-sm font-medium">
+                  {data?.name}
+                </Link>
+                <p className="text-xs text-muted-foreground">
+                  {data?.artists?.primary?.[0]?.name}
+                </p>
               </div>
-              <div className="flex items-center gap-2">
-                <Button
-                  size="icon"
-                  className="p-0 h-9 w-9"
-                  variant={!isLooping ? "ghost" : "secondary"}
-                  onClick={loopSong}
-                >
-                  {!isLooping ? (
-                    <Repeat className="h-3.5 w-3.5" />
-                  ) : (
-                    <Repeat1 className="h-3.5 w-3.5" />
-                  )}
-                </Button>
-                <Button
-                  size="icon"
-                  className="p-0 h-9 w-9"
-                  onClick={togglePlayPause}
-                >
-                  {playing ? (
-                    <IoPause className="h-4 w-4" />
-                  ) : (
-                    <Play className="h-4 w-4" />
-                  )}
-                </Button>
-                <Button
-                  size="icon"
-                  className="p-0 h-9 w-9"
-                  variant="secondary"
-                  onClick={() => {
-                    setMusic(null);
-                    setCurrent(0);
-                    localStorage.clear();
-                    audioRef.current.currentTime = 0;
-                    audioRef.current.src = null;
-                    setAudioURL(null);
-                  }}
-                >
-                  <X className="h-3.5 w-3.5" />
-                </Button>
-              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button size="icon" variant={isLooping ? "secondary" : "ghost"} onClick={loopSong}>
+                {isLooping ? <Repeat1 size={16} /> : <Repeat size={16} />}
+              </Button>
+
+              <Button size="icon" onClick={togglePlayPause}>
+                {playing ? <IoPause size={18} /> : <Play size={18} />}
+              </Button>
+
+              <Button
+                size="icon"
+                variant="secondary"
+                onClick={() => {
+                  setMusic(null);
+                  setCurrent(0);
+                  audioRef.current.pause();
+                  audioRef.current.src = "";
+                }}
+              >
+                <X size={16} />
+              </Button>
             </div>
           </div>
         </div>
