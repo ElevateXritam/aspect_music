@@ -2,54 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ======================================================
-   THEME VARIABLES (UNCHANGED – SAFE)
-   ====================================================== */
+/* =========================================================
+   THEME VARIABLES (ORIGINAL – SAFE)
+   ========================================================= */
 @layer base {
   :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-
-    --card: 240 10% 6%;
+    --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
-
-    --popover: 240 10% 6%;
+    --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-
     --primary: 0 0% 98%;
     --primary-foreground: 240 5.9% 10%;
-
-    --secondary: 240 4% 15%;
+    --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
-
-    --muted: 240 4% 15%;
-    --muted-foreground: 240 5% 65%;
-
-    --accent: 240 4% 15%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
-
-    --border: 240 4% 18%;
-    --input: 240 4% 18%;
-    --ring: 240 5% 84%;
-
-    --radius: 0.75rem;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
   }
 }
 
-/* ======================================================
-   BASE RESET
-   ====================================================== */
+/* =========================================================
+   BASE STYLES
+   ========================================================= */
 @layer base {
   * {
     @apply border-border;
   }
 
   body {
-    @apply bg-background text-foreground select-none;
-    background-image:
-      radial-gradient(circle at top, rgba(99,102,241,0.12), transparent 55%),
-      radial-gradient(circle at bottom, rgba(34,211,238,0.10), transparent 55%);
-    background-attachment: fixed;
+    @apply bg-background text-foreground select-none antialiased;
   }
 
   ::-webkit-scrollbar {
@@ -58,118 +68,77 @@
   }
 }
 
-/* ======================================================
-   GLASS / TRANSPARENT EFFECTS
-   ====================================================== */
-@layer utilities {
-
-  /* Universal glass */
-  .glass {
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(18px) saturate(140%);
-    -webkit-backdrop-filter: blur(18px) saturate(140%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-  }
-
-  /* Header / Search bar glass */
-  .glass-header {
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(22px);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
-
-  /* Card glass */
-  .glass-card {
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255,255,255,0.1);
-    transition: transform 0.35s ease, box-shadow 0.35s ease;
-  }
-
-  .glass-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
-  }
-
-  /* Mini Player glass */
-  .glass-player {
-    background: rgba(15,15,15,0.75);
-    backdrop-filter: blur(25px);
-    border-top: 1px solid rgba(255,255,255,0.08);
-  }
+/* =========================================================
+   GLASS / BLUR EFFECTS (SAFE)
+   ========================================================= */
+.glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius);
 }
 
-/* ======================================================
-   FLUID / LIQUID ANIMATIONS
-   ====================================================== */
-@layer utilities {
-
-  /* Animated gradient background */
-  .fluid-bg {
-    background: linear-gradient(
-      -45deg,
-      #050505,
-      #0f172a,
-      #020617,
-      #000000
-    );
-    background-size: 400% 400%;
-    animation: fluidGradient 18s ease infinite;
-  }
-
-  /* Liquid text */
-  .liquid-text {
-    background: linear-gradient(
-      45deg,
-      #a855f7,
-      #6366f1,
-      #22d3ee,
-      #a855f7
-    );
-    background-size: 300% 300%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: liquidFlow 7s ease infinite;
-  }
-
-  /* Soft floating */
-  .float-soft {
-    animation: floatSoft 6s ease-in-out infinite;
-  }
-
-  /* Glow pulse */
-  .glow-soft {
-    box-shadow: 0 0 25px rgba(99,102,241,0.35);
-  }
-
-  /* Ripple hover */
-  .ripple {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .ripple::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle, rgba(255,255,255,0.15) 10%, transparent 60%);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
-
-  .ripple:hover::after {
-    opacity: 1;
-  }
+.dark .glass {
+  background: rgba(0, 0, 0, 0.45);
 }
 
-/* ======================================================
-   KEYFRAMES
-   ====================================================== */
-@keyframes fluidGradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* =========================================================
+   SOFT FLUID BACKGROUND BLOBS
+   ========================================================= */
+.fluid-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.fluid-blob {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(120, 150, 255, 0.35),
+    rgba(120, 150, 255, 0.05)
+  );
+  filter: blur(40px);
+  animation: blobMove 18s ease-in-out infinite;
+}
+
+.fluid-blob.one {
+  top: 10%;
+  left: 5%;
+}
+
+.fluid-blob.two {
+  bottom: 15%;
+  right: 10%;
+  animation-delay: -6s;
+}
+
+@keyframes blobMove {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(60px, -40px) scale(1.15); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+/* =========================================================
+   LIQUID TEXT (OPTIONAL HEADINGS)
+   ========================================================= */
+.liquid-text {
+  background: linear-gradient(
+    120deg,
+    #7c9cff,
+    #9f7cff,
+    #7cffd4
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: liquidFlow 8s ease infinite;
 }
 
 @keyframes liquidFlow {
@@ -178,18 +147,53 @@
   100% { background-position: 0% 50%; }
 }
 
-@keyframes floatSoft {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+/* =========================================================
+   SUBTLE FLOAT (CARDS / PLAYER)
+   ========================================================= */
+.float-soft {
+  animation: floatSoft 6s ease-in-out infinite;
 }
 
-/* ======================================================
-   ACCESSIBILITY
-   ====================================================== */
+@keyframes floatSoft {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+/* =========================================================
+   SHIMMER (LOADING / HOVER)
+   ========================================================= */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.2),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: shimmerMove 2.5s infinite;
+}
+
+@keyframes shimmerMove {
+  100% { transform: translateX(100%); }
+}
+
+/* =========================================================
+   ACCESSIBILITY – REDUCE MOTION
+   ========================================================= */
 @media (prefers-reduced-motion: reduce) {
-  .fluid-bg,
+  .fluid-blob,
+  .float-soft,
   .liquid-text,
-  .float-soft {
+  .shimmer::after {
     animation: none !important;
   }
 }
