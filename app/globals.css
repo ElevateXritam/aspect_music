@@ -2,64 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
-/* =========================================================
-   THEME VARIABLES (ORIGINAL – SAFE)
-   ========================================================= */
+/* ======================================================
+   ROOT THEME VARIABLES (UNCHANGED STRUCTURE)
+====================================================== */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-    --radius: 0.75rem;
-  }
-
-  .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+
+    --card: 240 10% 6%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
+
+    --popover: 240 10% 6%;
     --popover-foreground: 0 0% 98%;
+
     --primary: 0 0% 98%;
     --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
+
+    --secondary: 240 4% 14%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
+
+    --muted: 240 4% 14%;
+    --muted-foreground: 240 5% 65%;
+
+    --accent: 240 4% 18%;
     --accent-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
+
+    --border: 240 3.7% 15%;
+    --input: 240 3.7% 15%;
     --ring: 240 4.9% 83.9%;
+
+    --radius: 0.75rem;
   }
 }
 
-/* =========================================================
+/* ======================================================
    BASE STYLES
-   ========================================================= */
+====================================================== */
 @layer base {
   * {
     @apply border-border;
   }
 
   body {
-    @apply bg-background text-foreground select-none antialiased;
+    @apply bg-background text-foreground select-none;
+    background-image:
+      radial-gradient(circle at top, rgba(255,255,255,0.04), transparent 40%),
+      radial-gradient(circle at bottom, rgba(255,255,255,0.02), transparent 40%);
   }
 
   ::-webkit-scrollbar {
@@ -68,132 +57,107 @@
   }
 }
 
-/* =========================================================
-   GLASS / BLUR EFFECTS (SAFE)
-   ========================================================= */
+/* ======================================================
+   GLASSMORPHISM UTILITIES (SAFE)
+====================================================== */
 .glass {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(14px) saturate(180%);
-  -webkit-backdrop-filter: blur(14px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--radius);
+  background: rgba(20, 20, 25, 0.55);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow:
+    0 8px 30px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.04);
 }
 
-.dark .glass {
-  background: rgba(0, 0, 0, 0.45);
+.glass-soft {
+  background: rgba(20, 20, 25, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
-/* =========================================================
-   SOFT FLUID BACKGROUND BLOBS
-   ========================================================= */
-.fluid-bg {
+/* ======================================================
+   FLUID MOTION (VERY LIGHT – NO JS)
+====================================================== */
+@keyframes fluidFloat {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+.fluid-hover {
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.fluid-hover:hover {
+  transform: translateY(-4px) scale(1.015);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.45);
+}
+
+/* ======================================================
+   LIQUID GLOW (SUBTLE)
+====================================================== */
+.liquid-glow {
+  position: relative;
+}
+
+.liquid-glow::after {
+  content: "";
   position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.fluid-blob {
-  position: absolute;
-  width: 260px;
-  height: 260px;
+  inset: -20%;
   background: radial-gradient(
-    circle at 30% 30%,
-    rgba(120, 150, 255, 0.35),
-    rgba(120, 150, 255, 0.05)
+    circle,
+    rgba(120,180,255,0.18),
+    transparent 60%
   );
-  filter: blur(40px);
-  animation: blobMove 18s ease-in-out infinite;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
 }
 
-.fluid-blob.one {
-  top: 10%;
-  left: 5%;
+.liquid-glow:hover::after {
+  opacity: 1;
 }
 
-.fluid-blob.two {
-  bottom: 15%;
-  right: 10%;
-  animation-delay: -6s;
+/* ======================================================
+   PLAYER SAFE EFFECTS
+====================================================== */
+.player-glass {
+  background: rgba(15, 15, 20, 0.7);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border-top: 1px solid rgba(255,255,255,0.08);
 }
 
-@keyframes blobMove {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(60px, -40px) scale(1.15); }
-  100% { transform: translate(0, 0) scale(1); }
-}
-
-/* =========================================================
-   LIQUID TEXT (OPTIONAL HEADINGS)
-   ========================================================= */
+/* ======================================================
+   TEXT LIQUID GRADIENT (OPTIONAL)
+====================================================== */
 .liquid-text {
   background: linear-gradient(
     120deg,
-    #7c9cff,
-    #9f7cff,
-    #7cffd4
+    #9fd3ff,
+    #cfa9ff,
+    #9fd3ff
   );
-  background-size: 300% 300%;
+  background-size: 200% 200%;
   -webkit-background-clip: text;
   background-clip: text;
-  color: transparent;
-  animation: liquidFlow 8s ease infinite;
+  -webkit-text-fill-color: transparent;
+  animation: textFlow 6s ease infinite;
 }
 
-@keyframes liquidFlow {
+@keyframes textFlow {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
-/* =========================================================
-   SUBTLE FLOAT (CARDS / PLAYER)
-   ========================================================= */
-.float-soft {
-  animation: floatSoft 6s ease-in-out infinite;
-}
-
-@keyframes floatSoft {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-  100% { transform: translateY(0); }
-}
-
-/* =========================================================
-   SHIMMER (LOADING / HOVER)
-   ========================================================= */
-.shimmer {
-  position: relative;
-  overflow: hidden;
-}
-
-.shimmer::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255,255,255,0.2),
-    transparent
-  );
-  transform: translateX(-100%);
-  animation: shimmerMove 2.5s infinite;
-}
-
-@keyframes shimmerMove {
-  100% { transform: translateX(100%); }
-}
-
-/* =========================================================
-   ACCESSIBILITY – REDUCE MOTION
-   ========================================================= */
+/* ======================================================
+   REDUCED MOTION SUPPORT
+====================================================== */
 @media (prefers-reduced-motion: reduce) {
-  .fluid-blob,
-  .float-soft,
-  .liquid-text,
-  .shimmer::after {
+  * {
     animation: none !important;
+    transition: none !important;
   }
 }
