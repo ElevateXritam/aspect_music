@@ -26,9 +26,10 @@ export default function Player() {
 
   const { music, setMusic, current, setCurrent } = useMusicProvider();
 
-  /* =========================
-     MEDIA SESSION (FIX)
-     ========================= */
+  /* =============================
+      MEDIA SESSION METADATA
+     ============================= */
+
   const setMediaSession = (song) => {
     if (!("mediaSession" in navigator) || !song) return;
 
@@ -67,7 +68,7 @@ export default function Player() {
     const song = json.data[0];
 
     setData(song);
-    setMediaSession(song); // 🔥 MAIN FIX
+    setMediaSession(song);
 
     const url =
       song.downloadUrl?.[2]?.url ||
@@ -83,6 +84,7 @@ export default function Player() {
   };
 
   const handleSeek = (val) => {
+    if (!audioRef.current) return;
     audioRef.current.currentTime = val[0];
     setCurrentTime(val[0]);
   };
@@ -91,6 +93,26 @@ export default function Player() {
     audioRef.current.loop = !isLooping;
     setIsLooping(!isLooping);
   };
+
+  /* =============================
+       MAIN TIMELINE FIX
+     ============================= */
+
+  const updateMediaPosition = (pos, dur) => {
+    if ("mediaSession" in navigator && dur > 0) {
+      try {
+        navigator.mediaSession.setPositionState({
+          duration: dur,
+          position: pos,
+          playbackRate: audioRef.current?.playbackRate || 1,
+        });
+      } catch (e) {
+        // Some browsers ignore this; safe to skip
+      }
+    }
+  };
+
+  /* ========================= */
 
   useEffect(() => {
     if (!music) return;
@@ -102,12 +124,22 @@ export default function Player() {
     }
 
     const onTimeUpdate = () => {
-      setCurrentTime(audioRef.current.currentTime);
-      setDuration(audioRef.current.duration || 0);
-      setCurrent(audioRef.current.currentTime);
+      const audio = audioRef.current;
+      if (!audio) return;
+
+      const pos = audio.currentTime;
+      const dur = audio.duration || 0;
+
+      setCurrentTime(pos);
+      setDuration(dur);
+      setCurrent(pos);
+
+      // FIX LOCK SCREEN TIMELINE
+      updateMediaPosition(pos, dur);
     };
 
     audioRef.current.addEventListener("timeupdate", onTimeUpdate);
+
     return () => {
       audioRef.current?.removeEventListener("timeupdate", onTimeUpdate);
     };
@@ -124,7 +156,7 @@ export default function Player() {
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         onLoadedMetadata={() =>
-          setDuration(audioRef.current.duration || 0)
+          setDuration(audioRef.current?.duration || 0)
         }
       />
 
@@ -149,8 +181,9 @@ export default function Player() {
                 alt=""
               />
               <div>
-                <Link href={`/${music}`} className="text-sm font-medium">
+                <Link href={`/${music}`} className="text-sm font-medium flex items-center gap-1">
                   {data?.name}
+                  <ExternalLink size={14} />
                 </Link>
                 <p className="text-xs text-muted-foreground">
                   {data?.artists?.primary?.[0]?.name}
@@ -159,7 +192,11 @@ export default function Player() {
             </div>
 
             <div className="flex items-center gap-2">
-              <Button size="icon" variant={isLooping ? "secondary" : "ghost"} onClick={loopSong}>
+              <Button
+                size="icon"
+                variant={isLooping ? "secondary" : "ghost"}
+                onClick={loopSong}
+              >
                 {isLooping ? <Repeat1 size={16} /> : <Repeat size={16} />}
               </Button>
 
